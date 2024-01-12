@@ -17,6 +17,18 @@
 package log
 
 import (
+	"fmt"
+	"os"
+	"sync"
+	"github.com/sirupsen/logrus"
+	"io/ioutil"
+	"context"
+	"crypto/rand"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
+)
+
+import (
 	"bytes"
 	"context"
 	"crypto/rand"
@@ -226,6 +238,20 @@ func getLogLevel(level logrus.Level) string {
 	default:
 		return "[UNKNOWN]: "
 	}
+	switch level {
+	case logrus.DebugLevel:
+		return "[DEBUG]: "
+	case logrus.InfoLevel:
+		return "[INFO]: "
+	case logrus.WarnLevel:
+		return "[WARNING]: "
+	case logrus.ErrorLevel:
+		return "[ERROR]: "
+	case logrus.FatalLevel:
+		return "[FATAL]: "
+	default:
+		return "[UNKNOWN]: "
+	}
 }
 
 // Debugf ensures output of formatted debug logs
@@ -330,7 +356,7 @@ func EnsureGRPCContext(ctx context.Context, req interface{},
 	if requestID == "" {
 		randomID, err := rand.Prime(rand.Reader, 32)
 		if err != nil {
-			Errorf("Failed in random ID generation for GRPC request ID logging: %v", err)
+			Errorf("Failed to generate a random ID for GRPC request ID logging: %v", err)
 			return handler(ctx, req)
 		}
 		requestID = randomID.String()
