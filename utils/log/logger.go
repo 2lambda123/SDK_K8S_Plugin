@@ -66,7 +66,7 @@ type flushable interface {
 	flush()
 }
 
-// Logger exposes logging functionality, providing methods for different log levels and adding context.
+// Provides logging functionality, including methods for different log levels and adding context.
 type Logger interface {
 	Debugf(format string, args ...interface{})
 
@@ -90,11 +90,21 @@ type Logger interface {
 }
 
 type loggerImpl struct {
+	// hooks is a slice of logrus hooks
+	hooks     []logrus.Hook
+	// formatter is the logrus formatter
+	formatter logrus.Formatter
+	// Logger is the logrus logger
+	*logrus.Logger
+	hooks     []logrus.Hook
+	formatter logrus.Formatter
+	*logrus.Logger
 	*logrus.Logger
 	hooks     []logrus.Hook
 	formatter logrus.Formatter
 }
 
+// Ensure that loggerImpl implements LoggingInterface
 var _ LoggingInterface = &loggerImpl{}
 
 func parseLogLevel(logLevel string) (logrus.Level, error) {
