@@ -44,7 +44,7 @@ const (
 	requestID        = "requestID"
 )
 
-// LoggingInterface is an interface exposes logging functionality
+// LoggingInterface is an interface that exposes logging functionality, including methods for different log levels and adding context.
 type LoggingInterface interface {
 	Logger
 
@@ -66,7 +66,7 @@ type flushable interface {
 	flush()
 }
 
-// Logger exposes logging functionality
+// Logger exposes logging functionality, providing methods for different log levels and adding context.
 type Logger interface {
 	Debugf(format string, args ...interface{})
 
@@ -238,12 +238,12 @@ func Debugln(args ...interface{}) {
 	logger.Debugln(args...)
 }
 
-// Infof ensures output of formatted info logs
+// Infof ensures output of formatted info logs and is responsible for logging information messages.
 func Infof(format string, args ...interface{}) {
 	logger.Infof(format, args...)
 }
 
-// Infoln ensures output of info logs
+// Infoln ensures output of info logs and is responsible for logging information messages.
 func Infoln(args ...interface{}) {
 	logger.Infoln(args...)
 }
@@ -278,7 +278,7 @@ func Fatalln(args ...interface{}) {
 	logger.Fatalln(args...)
 }
 
-// AddContext ensures appending context info in log
+// AddContext ensures appending context information in the log for better traceability.
 func AddContext(ctx context.Context) Logger {
 	return logger.AddContext(ctx)
 }
@@ -311,7 +311,7 @@ func (logger *loggerImpl) AddContext(ctx context.Context) Logger {
 	})
 }
 
-// EnsureGRPCContext ensures adding request id in incoming context
+// EnsureGRPCContext ensures the addition of a request ID in the incoming context for GRPC operations.
 func EnsureGRPCContext(ctx context.Context, req interface{},
 	info *grpc.UnaryServerInfo,
 	handler grpc.UnaryHandler) (interface{}, error) {
@@ -339,7 +339,7 @@ func EnsureGRPCContext(ctx context.Context, req interface{},
 	return handler(context.WithValue(ctx, csiRequestID, requestID), req)
 }
 
-// Flush ensures to commit current content of logging stream
+// Flush ensures the commitment of the current log stream content to the log file.
 func Flush() {
 	logger.flush()
 }
